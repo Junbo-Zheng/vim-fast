@@ -5,13 +5,13 @@
 "  \ \__|    \ \_\  \ \_\ \ \_\  \ \_\    \ \_\ \_\  \/\_____\    \ \_\
 "   \/_/      \/_/   \/_/  \/_/   \/_/     \/_/\/_/   \/_____/     \/_/
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" chenxuan的个人Vim配置(无插件版本)
+" zhengjunbo的个人Vim配置(无插件版本)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 通用设置
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let mapleader = ","      " 定义<leader>键
+let mapleader = " "      " 定义<leader>键
 set nocompatible         " 设置不兼容原始vi模式
 filetype on              " 设置开启文件类型侦测
 filetype plugin on       " 设置加载对应文件类型的插件
@@ -47,7 +47,7 @@ filetype indent on       " 自适应不同语言的智能缩进
 set noexpandtab          " 设置禁止空格替换tab,tab党
 set tabstop=4            " 设置编辑时制表符占用空格数
 set shiftwidth=4         " 设置格式化时制表符占用空格数
-set softtabstop=4        " 设置4个空格为制表符
+" set softtabstop=4        " 设置4个空格为制表符
 set smarttab             " 在行和段开始处使用制表符
 set nowrap               " 禁止折行
 set backspace=2          " 使用回车键正常处理indent,eol,start等
@@ -280,7 +280,7 @@ nnoremap <F8> :Step<cr>
 
 " easy to add time
 func Time()
-	return "update by chenxuan ".strftime("%Y-%m-%d %H:%M:%S")
+	return "update by zhengjunbo".strftime("%Y-%m-%d %H:%M:%S")
 endfunc
 
 " term console
@@ -867,8 +867,8 @@ endfunc
 nnoremap <silent><nowait>gl :call <sid>GotoLink()<cr>
 
 " set alias
-iab ;e 1607772321@qq.com
-iab ;n chenxuan
+iab ;e 3273070@qq.com
+iab ;n zhengjunbo
 nnoremap \a :iabc<cr>
 nnoremap =a :ab<cr>
 
@@ -992,7 +992,7 @@ highlight User6 font=#000000 guifg=#7AA2F7 guibg=#232433
 " set netrw {{{
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
-let g:netrw_browse_split = 4
+" let g:netrw_browse_split = 4
 let g:netrw_altv = 1
 let g:netrw_winsize = 15
 set fillchars=vert:\⎜
@@ -1610,3 +1610,68 @@ let g:terminal_ansi_colors = [s:terminal.black[0], s:terminal.red[0], s:terminal
 			\ s:terminal.green[0], s:terminal.yellow[0], s:terminal.blue[0], s:terminal.purple[0], s:terminal.cyan[0], s:terminal.white[0]]
 
 " vim: set fen ft=vim fdm=marker fmr={{{,}}}:
+
+" add by zhengjunbo
+inoremap jj <ESC>
+inoremap JJ <ESC>
+set lcs=tab:>-,space:·,trail:!
+set list
+nnoremap <F3> :set list! list?<CR>
+
+nnoremap <F4> :set number! nonumber?<CR>
+nnoremap - $
+
+" 单行交换（无延迟问题）
+nnoremap <silent> <leader>d :m .+1<CR>==
+nnoremap <silent> <leader>u :m .-2<CR>==
+
+set clipboard+=unnamed
+set backspace=indent,eol,start
+
+set expandtab          " 设置禁止空格替换tab,tab党
+
+set mouse=
+
+"=============新建.c,.h,.sh,.java文件，自动插入文件头
+autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java exec ":call SetTitle()"
+""定义函数SetTitle，自动插入文件头
+func SetTitle()
+    "如果文件类型为.sh文件
+    if &filetype == 'sh'
+        call setline(1, "\#!/bin/bash")
+        call append(line("."), "\############################")
+        call append(line(".")+1, "\# File Name: ".expand("%"))
+        call append(line(".")+2, "\# Author: Junbo Zheng")
+        call append(line(".")+3, "\# mail: zhengjunbo1@xiaomi.com")
+        call append(line(".")+4, "\# Created Time: ".strftime("%c"))
+        call append(line(".")+5, "\############################")
+        call append(line(".")+6, "")
+    else
+        call setline(1, "/******************************")
+        call append(line("."),   "    > File Name    : ".expand("%"))
+        call append(line(".")+1, "    > Author       : Junbo Zheng")
+        call append(line(".")+2, "    > E-Mail       : zhengjunbo1@xiaomi.com")
+        call append(line(".")+3, "    > Created Time : ".strftime("%c"))
+        call append(line(".")+4, " *****************************/")
+        call append(line(".")+5, "")
+
+        if expand("%") == 'main.c' || expand("%") == 'main.cpp' || expand("%") == 'a.c' || expand("%") == 'a.cpp'
+          if  expand("%") == 'main.c' || expand("%") == 'a.c'
+            call append(line(".")+6, "#include <stdio.h>")
+          else
+            call append(line(".")+6, "#include <iostream>")
+          endif
+          call append(line(".")+7, "")
+          call append(line(".")+8, "int main(void)")
+          call append(line(".")+9, "{")
+          call append(line(".")+10, "")
+          call append(line(".")+11, "    printf(\"hello world\");")
+          call append(line(".")+12, "    return 0;")
+          call append(line(".")+13, "}")
+        endif
+    endif
+
+
+    "新建文件后，自动定位到文件末尾
+    "autocmd BufNewFile * normal G
+endfunc
