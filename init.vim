@@ -852,6 +852,18 @@ augroup NvimTree
   autocmd BufEnter * if &filetype != 'NvimTree'| call s:NvimTreeFind()|endif
 augroup END
 
+" diffview.nvim
+function! DiffviewToggle()
+  if luaeval('next(require("diffview.lib").views) ~= nil')
+    DiffviewClose
+  else
+    DiffviewOpen
+  endif
+endfunction
+command! DiffviewToggle call DiffviewToggle()
+nnoremap <silent><space>d :DiffviewToggle<cr>
+
+
 " coc.nvim
 let g:coc_disable_startup_warning = 1
 inoremap <silent><expr> <TAB>
