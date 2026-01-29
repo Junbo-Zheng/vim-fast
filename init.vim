@@ -197,7 +197,7 @@ inoremap <c-t> <c-[>?}<cr>:noh<cr>va{<c-g>
 
 " yank to system
 vnoremap <leader><leader>y "+y
-nnoremap <leader><leader>y "+y
+vnoremap Y "+y
 " paste to system
 nnoremap <leader><leader>p "+p
 nnoremap <leader><leader>P "+P
