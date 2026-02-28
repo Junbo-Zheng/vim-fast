@@ -88,7 +88,6 @@ set confirm             " if quit without save,make confirm
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set langmenu=zh_CN.UTF-8 " set langmenu encode utf-8
 set helplang=cn          " set helplang Chinese
-set termencoding=utf-8   " set term encode
 set encoding=utf8        " set encode
 set fileencodings=utf8,ucs-bom,gbk,cp936,gb2312,gb18030 " set detect encode of file
 
@@ -212,8 +211,17 @@ augroup ReadPost
 	autocmd TermClose * if !exists('g:nvim_term_open')|call feedkeys("i\<esc>\<esc>")|else|unlet g:nvim_term_open|endif
 	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | execute "normal! zz" | endif
 	autocmd BufDelete * if expand('%:p')!=''&& &bt==""|let g:map_recent_close[expand('%:p')] =
-				\{'lnum':line('.'),'col':col('.'),'text':'close at '.strftime("%H:%M"),'time':localtime()}
-				\|endif
+			\{'lnum':line('.'),'col':col('.'),'text':'close at '.strftime("%H:%M"),'time':localtime()}
+			\|endif
+	" nvim 0.11+ 自带右键 PopUp 菜单会在 MenuPopup 时动态 enable/disable。
+	" vim-fast 会 unmenu PopUp 并重建菜单，导致内置回调找不到菜单项时报 E329。
+	" 清掉内置的 nvim.popupmenu 组，避免与自定义右键菜单冲突。
+	" f**k nvim break change
+	if has('nvim') && exists('#nvim.popupmenu#MenuPopup')
+		silent! augroup nvim.popupmenu
+			autocmd!
+		silent! augroup END
+	endif
 	autocmd MenuPopup * call RightMouseMenu()
 augroup END
 
